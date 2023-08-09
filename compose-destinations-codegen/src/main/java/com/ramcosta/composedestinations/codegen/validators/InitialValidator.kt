@@ -122,7 +122,8 @@ class InitialValidator(
         currentKnownComposableNames: List<String>,
     ) {
         if (currentKnownComposableNames.contains(composableName)) {
-            throw IllegalDestinationsSetup("Destination composable names must be unique: found multiple named '${composableName}'")
+            // TODO RACOSTA
+//            throw IllegalDestinationsSetup("Destination composable names must be unique: found multiple named '${composableName}'")
         }
     }
 

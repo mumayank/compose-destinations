@@ -57,7 +57,7 @@ internal class NavGraphsPrettyKdocWriter(
 
         addNestedNavGraphs(navGraphTree, depth)
 
-        addExternalNavGraphs(navGraphTree, depth)
+        addImportedNavGraphs(navGraphTree, depth)
     }
 
     private fun StringBuilder.addDestinations(
@@ -73,10 +73,10 @@ internal class NavGraphsPrettyKdocWriter(
                     true
                 )
             } +
-                    navGraphTree.externalDestinations.map {
+                    navGraphTree.importedDestinations.map {
                         KdocRoute(
                             true,
-                            it.generatedType == navGraphTree.externalStartRoute?.generatedType,
+                            it.generatedType == navGraphTree.importedStartRoute?.generatedType,
                             it.generatedType,
                             true
                         )
@@ -116,28 +116,28 @@ internal class NavGraphsPrettyKdocWriter(
             }
     }
 
-    private fun StringBuilder.addExternalNavGraphs(
+    private fun StringBuilder.addImportedNavGraphs(
         navGraphTree: RawNavGraphTree,
         depth: Int
     ) {
-        if (navGraphTree.externalNavGraphs.isNotEmpty()) {
+        if (navGraphTree.importedNavGraphs.isNotEmpty()) {
             appendNewLines()
         }
 
-        navGraphTree.externalNavGraphs
-            .sortedBy { if (it == navGraphTree.externalStartRoute) 0 else 1 }
+        navGraphTree.importedNavGraphs
+            .sortedBy { if (it == navGraphTree.importedStartRoute) 0 else 1 }
             .forEachIndexed { idx, it ->
                 appendKdocRoute(
                     KdocRoute(
                         true,
-                        it == navGraphTree.externalStartRoute,
+                        it == navGraphTree.importedStartRoute,
                         it.generatedType,
                         false
                     ),
                     depth + 1
                 )
 
-                if (idx < navGraphTree.externalNavGraphs.lastIndex) {
+                if (idx < navGraphTree.importedNavGraphs.lastIndex) {
                     appendNewLines()
                 }
             }
@@ -158,7 +158,7 @@ internal class NavGraphsPrettyKdocWriter(
             appendStartIcon()
         }
         append("[${importableHelper.addAndGetPlaceholder(kdocRoute.type)}]")
-        if (kdocRoute.isExternal) {
+        if (kdocRoute.isExternalModule) {
             appendExternalIcon()
         }
         if (!kdocRoute.isDestination) {
@@ -207,7 +207,7 @@ internal class NavGraphsPrettyKdocWriter(
     }
 
     private class KdocRoute(
-        val isExternal: Boolean,
+        val isExternalModule: Boolean,
         val isStart: Boolean,
         val type: Importable,
         val isDestination: Boolean,

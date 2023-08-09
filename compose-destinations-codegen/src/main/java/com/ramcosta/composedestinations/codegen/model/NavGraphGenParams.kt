@@ -15,17 +15,11 @@ interface NavGraphGenParams {
     val parent: Importable?
     val isParentStart: Boolean?
     val visibility: Visibility
-    val externalStartRoute: ExternalRoute?
-    val externalNavGraphs: List<ExternalRoute>
-    val externalDestinations: List<ExternalRoute>
+    val importedRoutes: List<ImportedRoute>
+    val importedNavGraphs: List<ImportedRoute.NavGraph>
+    val importedDestinations: List<ImportedRoute.Destination>
+    val importedStartRoute: ImportedRoute?
 }
-
-data class ExternalRoute(
-    val generatedType: Importable,
-    val navArgs: RawNavArgsClass?,
-    val isDestination: Boolean,
-    val requireOptInAnnotationTypes: List<Importable>
-)
 
 data class RawNavGraphGenParams(
     override val annotationType: Importable,
@@ -38,11 +32,13 @@ data class RawNavGraphGenParams(
     override val parent: Importable? = null,
     override val isParentStart: Boolean? = null,
     override val visibility: Visibility,
-    override val externalStartRoute: ExternalRoute?,
-    override val externalNavGraphs: List<ExternalRoute>,
-    override val externalDestinations: List<ExternalRoute>,
+    override val importedRoutes: List<ImportedRoute>,
     private val routeOverride: String? = null,
-): NavGraphGenParams {
+) : NavGraphGenParams {
+
+    override val importedNavGraphs: List<ImportedRoute.NavGraph> = importedRoutes.filterIsInstance<ImportedRoute.NavGraph>()
+    override val importedDestinations: List<ImportedRoute.Destination> = importedRoutes.filterIsInstance<ImportedRoute.Destination>()
+    override val importedStartRoute = importedRoutes.find { it.isStart }
 
     override val name: String = annotationType.simpleName.let {
         if (it.endsWith("NavGraph")) {

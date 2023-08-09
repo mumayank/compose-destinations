@@ -34,8 +34,10 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.SOURCE)
+@Repeatable
 annotation class Destination(
     val route: String = COMPOSABLE_NAME,
+    val start: Boolean = false,
     val navArgs: KClass<*> = Nothing::class,
     val deepLinks: Array<DeepLink> = [],
     val style: KClass<out DestinationStyle> = DestinationStyle.Default::class,
